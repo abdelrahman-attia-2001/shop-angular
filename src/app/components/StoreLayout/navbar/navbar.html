@@ -1,0 +1,243 @@
+<nav
+  class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm sticky top-0 z-50"
+>
+  <div class="container mx-auto px-4 lg:px-6">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo/Brand -->
+      <div class="flex-shrink-0">
+        <a
+          routerLink="/"
+          class="flex items-center gap-2 text-2xl font-black text-gray-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300"
+        >
+          <img src="/final.ico" alt="logo" class="w-8 h-8" />
+          <span>SHOP.CO</span>
+        </a>
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a
+          routerLink="/"
+          routerLinkActive="!text-cyan-600 dark:!text-cyan-400 !font-semibold"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300 relative group py-1"
+        >
+          Home
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 dark:bg-cyan-400 group-hover:w-full transition-all duration-300"
+          ></span>
+        </a>
+        <a
+          routerLink="/about"
+          routerLinkActive="!text-cyan-600 dark:!text-cyan-400 !font-semibold"
+          class="text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300 relative group py-1"
+        >
+          About
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 dark:bg-cyan-400 group-hover:w-full transition-all duration-300"
+          ></span>
+        </a>
+        <a
+          routerLink="/shop"
+          routerLinkActive="!text-cyan-600 dark:!text-cyan-400 !font-semibold"
+          class="text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300 relative group py-1"
+        >
+          Shop
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 dark:bg-cyan-400 group-hover:w-full transition-all duration-300"
+          ></span>
+        </a>
+        <a
+          routerLink="/orders"
+          routerLinkActive="!text-cyan-600 dark:!text-cyan-400 !font-semibold"
+          class="text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300 relative group py-1"
+        >
+          Orders
+          <span
+            *ngIf="activeOrdersCount > 0"
+            class="ml-1 px-1.5 py-0.5 text-xs bg-cyan-500 text-white rounded-full font-bold"
+          >
+            {{ activeOrdersCount }}
+          </span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 dark:bg-cyan-400 group-hover:w-full transition-all duration-300"
+          ></span>
+        </a>
+      </div>
+
+      <!-- Action Icons -->
+      <div class="flex items-center space-x-2">
+        <!-- Wishlist -->
+        <button
+          (click)="goToWishlist()"
+          class="p-2 text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-300 relative"
+          aria-label="Wishlist"
+        >
+          <mat-icon class="!text-xl">favorite_border</mat-icon>
+          <span
+            *ngIf="wishlistCount > 0"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg"
+          >
+            {{ wishlistCount }}
+          </span>
+        </button>
+
+        <!-- Shopping Cart -->
+        <button
+          (click)="goToCart()"
+          class="p-2 text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-300 relative"
+          aria-label="Shopping cart"
+        >
+          <mat-icon class="!text-xl">shopping_cart</mat-icon>
+          <span
+            *ngIf="cartCount > 0"
+            class="absolute -top-1 -right-1 bg-cyan-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg"
+          >
+            {{ cartCount }}
+          </span>
+        </button>
+
+        <!-- Orders (Mobile Icon) -->
+        <button
+          (click)="goToOrders()"
+          class="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-300 relative"
+          aria-label="Orders"
+        >
+          <mat-icon class="!text-xl">receipt_long</mat-icon>
+          <span
+            *ngIf="activeOrdersCount > 0"
+            class="absolute -top-1 -right-1 bg-purple-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg"
+          >
+            {{ activeOrdersCount }}
+          </span>
+        </button>
+
+        <!-- User Account/Login -->
+        <button
+          (click)="toggleUserMenu()"
+          class="p-2 text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-300"
+          aria-label="User account"
+        >
+          <mat-icon class="!text-xl">account_circle</mat-icon>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button
+          (click)="toggleMobileMenu()"
+          class="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-300"
+          aria-label="Menu"
+        >
+          <mat-icon class="!text-2xl">{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    *ngIf="isMobileMenuOpen"
+    class="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 animate-slideDown"
+  >
+    <div class="px-4 py-4 space-y-1">
+      <a
+        routerLink="/"
+        routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400 !font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg"
+      >
+        Home
+      </a>
+      <a
+        routerLink="/about"
+        routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400 !font-semibold"
+        class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg"
+      >
+        About
+      </a>
+      <a
+        routerLink="/shop"
+        routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400 !font-semibold"
+        class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg"
+      >
+        Shop
+      </a>
+      <a
+        routerLink="/orders"
+        routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400 !font-semibold"
+        class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg flex items-center justify-between"
+      >
+        <span>Orders</span>
+        <span
+          *ngIf="activeOrdersCount > 0"
+          class="bg-purple-500 text-white text-xs font-bold rounded-full px-2 py-1"
+        >
+          {{ activeOrdersCount }}
+        </span>
+      </a>
+
+      <div class="border-t border-gray-200 dark:border-gray-800 pt-3 mt-3 space-y-1">
+        <a
+          routerLink="/wishlist"
+          routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400"
+          class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg flex items-center gap-3"
+        >
+          <mat-icon class="!text-lg">favorite_border</mat-icon>
+          Wishlist
+          <span
+            *ngIf="wishlistCount > 0"
+            class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1"
+          >
+            {{ wishlistCount }}
+          </span>
+        </a>
+        <a
+          routerLink="/cart"
+          routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400"
+          class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg flex items-center gap-3"
+        >
+          <mat-icon class="!text-lg">shopping_cart</mat-icon>
+          Cart
+          <span
+            *ngIf="cartCount > 0"
+            class="ml-auto bg-cyan-500 text-white text-xs font-bold rounded-full px-2 py-1"
+          >
+            {{ cartCount }}
+          </span>
+        </a>
+        <a
+          routerLink="/account"
+          routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400"
+          class="block text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 py-3 px-4 rounded-lg flex items-center gap-3"
+        >
+          <mat-icon class="!text-lg">account_circle</mat-icon>
+          Account
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Dropdown Menu (Desktop) -->
+  <div
+    *ngIf="isUserMenuOpen"
+    class="absolute right-6 top-16 mt-2 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl z-50 animate-fadeIn hidden md:block overflow-hidden"
+  >
+    <div class="py-2">
+      <a
+        routerLink="/account"
+        routerLinkActive="!bg-cyan-50 dark:!bg-cyan-900/20 !text-cyan-600 dark:!text-cyan-400"
+        class="block px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 flex items-center gap-3"
+      >
+        <mat-icon class="!text-lg">person</mat-icon>
+        My Account
+      </a>
+      <hr class="border-gray-200 dark:border-gray-800 my-2" />
+      <button
+        (click)="logout()"
+        class="w-full text-left px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-300 flex items-center gap-3"
+      >
+        <mat-icon class="!text-lg">logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>

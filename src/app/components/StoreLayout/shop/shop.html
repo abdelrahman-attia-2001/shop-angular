@@ -1,0 +1,223 @@
+<main class="min-h-screen bg-gray-50 dark:bg-gray-950 pb-20">
+  <!-- Page Header -->
+  <div
+    class="bg-white dark:bg-gray-900 py-12 md:py-16 border-b border-gray-200 dark:border-gray-800"
+  >
+    <div class="container mx-auto px-4">
+      <h1
+        class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white text-center"
+      >
+        ALL PRODUCTS
+      </h1>
+      <p class="text-center text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+        Browse our complete collection of high-quality fashion items
+      </p>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Mobile Filter Button -->
+      <div class="lg:hidden mb-4">
+        <button
+          (click)="toggleMobileFilters()"
+          class="w-full px-6 py-3 text-base border-2 border-cyan-600 text-cyan-600 bg-transparent hover:bg-cyan-600 hover:text-white rounded-lg font-medium transition-all duration-150 flex items-center justify-center gap-2"
+        >
+          <mat-icon class="!text-xl">filter_list</mat-icon>
+          Show Filters
+        </button>
+      </div>
+
+      <!-- Sidebar Filters -->
+      <div [class.hidden]="!showMobileFilters" [class.block]="showMobileFilters" class="lg:block">
+        <div
+          class="w-full lg:w-64 flex-shrink-0 space-y-8 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-2"
+        >
+          <!-- Search -->
+          <div class="relative w-full max-w-md mx-auto">
+            <input
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchChange()"
+              type="text"
+              placeholder="Search products..."
+              class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm placeholder-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:focus:ring-blue-400"
+            />
+            <mat-icon
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 text-lg pointer-events-none"
+            >
+              search
+            </mat-icon>
+          </div>
+
+          <!-- Categories -->
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Categories</h3>
+            <div class="space-y-3">
+              <label
+                *ngFor="let cat of categories"
+                class="flex items-center gap-3 cursor-pointer group"
+              >
+                <input
+                  type="radio"
+                  name="category"
+                  [value]="cat.value"
+                  [(ngModel)]="selectedCategory"
+                  (change)="onCategoryChange()"
+                  class="hidden peer"
+                />
+                <div
+                  class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all peer-checked:border-cyan-600 peer-checked:bg-cyan-600"
+                >
+                  <div
+                    class="w-2 h-2 rounded-full bg-white scale-0 peer-checked:scale-100 transition-transform"
+                  ></div>
+                </div>
+                <span
+                  class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors"
+                >
+                  {{ cat.label }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Brands -->
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Brands</h3>
+            <div class="space-y-3 max-h-60 overflow-y-auto pr-2">
+              <label
+                *ngFor="let brand of brands"
+                class="flex items-center gap-3 cursor-pointer group"
+              >
+                <input
+                  type="radio"
+                  name="brand"
+                  [value]="brand.value"
+                  [(ngModel)]="selectedBrand"
+                  (change)="onBrandChange()"
+                  class="hidden peer"
+                />
+                <div
+                  class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all peer-checked:border-cyan-600 peer-checked:bg-cyan-600"
+                >
+                  <div
+                    class="w-2 h-2 rounded-full bg-white scale-0 peer-checked:scale-100 transition-transform"
+                  ></div>
+                </div>
+                <span
+                  class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors"
+                >
+                  {{ brand.label }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Price Range</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>${{ minPrice }}</span>
+                <span>${{ maxPriceFilter }}</span>
+              </div>
+              <input
+                [(ngModel)]="maxPriceFilter"
+                (ngModelChange)="onPriceChange()"
+                [min]="minPrice"
+                [max]="maxPrice"
+                step="10"
+                class="w-full accent-cyan-600 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                type="range"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="flex-1">
+        <!-- Products Count -->
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            All Products
+            <span class="ml-2 text-sm font-normal text-gray-600 dark:text-gray-400">
+              ({{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'item' : 'items' }})
+            </span>
+          </h2>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="flex items-center justify-center py-20">
+          <div class="text-center">
+            <div
+              class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-cyan-600 border-t-transparent"
+            ></div>
+            <p class="text-gray-600 dark:text-gray-400 mt-4">Loading products...</p>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <app-card-producte
+            *ngFor="let product of paginatedProducts"
+            [product]="product"
+            (wishlistToggle)="toggleWishlist($event)"
+            (addToCartClick)="addToCart($event)"
+          ></app-card-producte>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && filteredProducts.length === 0" class="text-center py-20">
+          <mat-icon class="!text-6xl text-gray-400 mb-4">shopping_bag</mat-icon>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            No products found
+          </h3>
+          <p class="text-gray-600 dark:text-gray-400">Try adjusting your filters</p>
+        </div>
+
+        <!-- Pagination -->
+        <div
+          *ngIf="!isLoading && filteredProducts.length > 0 && totalPages > 1"
+          class="flex items-center justify-center gap-2 mt-8"
+        >
+          <!-- Previous Button -->
+          <button
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            class="h-9 w-9 p-0 border-2 border-cyan-600 text-cyan-600 bg-transparent hover:bg-cyan-600 hover:text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            <mat-icon class="!text-base">chevron_left</mat-icon>
+          </button>
+
+          <!-- Page Numbers -->
+          <button
+            *ngFor="let page of getPageNumbers()"
+            (click)="goToPage(page)"
+            [class.bg-cyan-600]="currentPage === page"
+            [class.text-white]="currentPage === page"
+            [class.shadow-lg]="currentPage === page"
+            [class.shadow-cyan-600/20]="currentPage === page"
+            [class.border-2]="currentPage !== page"
+            [class.border-cyan-600]="currentPage !== page"
+            [class.text-cyan-600]="currentPage !== page"
+            [class.hover:bg-cyan-600]="currentPage !== page"
+            [class.hover:text-white]="currentPage !== page"
+            class="h-9 w-9 p-0 rounded-lg transition-all flex items-center justify-center font-medium"
+          >
+            {{ page }}
+          </button>
+
+          <!-- Next Button -->
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            class="h-9 w-9 p-0 border-2 border-cyan-600 text-cyan-600 bg-transparent hover:bg-cyan-600 hover:text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            <mat-icon class="!text-base">chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

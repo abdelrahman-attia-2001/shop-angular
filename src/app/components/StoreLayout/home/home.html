@@ -1,0 +1,245 @@
+<div class="bg-gray-900 text-white min-h-screen font-sans">
+  <!-- Hero Section -->
+  <div class="container mx-auto px-4 py-12 md:py-16 lg:py-20">
+    <div class="grid lg:grid-cols-2 gap-8 items-center">
+      <!-- Left Content -->
+      <div class="space-y-6 lg:space-y-8">
+        <!-- Main Heading -->
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight text-text-primary"
+        >
+          FIND CLOTHES<br />
+          THAT MATCHES<br />
+          YOUR STYLE
+        </h1>
+
+        <!-- Description -->
+        <p class="text-base md:text-lg text-[#9ca3af] max-w-lg">
+          Browse through our diverse range of meticulously crafted garments, designed to bring out
+          your individuality and cater to your sense of style.
+        </p>
+
+        <!-- Shop Now Button -->
+        <button
+          routerLink="/shop"
+          class="inline-flex items-center justify-center gap-2 px-12 py-4 text-lg font-medium rounded-full bg-gray-800 text-white shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-gray-700 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed w-full sm:w-auto"
+        >
+          Shop Now
+        </button>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-3 gap-4 md:gap-8 pt-6 md:pt-8 border-t border-[#9ca3af]/20">
+          <div>
+            <div class="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary">200+</div>
+            <div class="text-xs md:text-sm text-[#9ca3af] mt-1">International Brands</div>
+          </div>
+          <div class="border-l border-[#9ca3af]/20 pl-4 md:pl-8">
+            <div class="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary">2,000+</div>
+            <div class="text-xs md:text-sm text-[#9ca3af] mt-1">High-Quality Products</div>
+          </div>
+          <div class="border-l border-[#9ca3af]/20 pl-4 md:pl-8">
+            <div class="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary">30,000+</div>
+            <div class="text-xs md:text-sm text-[#9ca3af] mt-1">Happy Customers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Image Carousel -->
+      <div class="relative lg:h-[750px] xl:h-[850px] h-[550px]">
+        <!-- Sparkle Icons -->
+        <div class="absolute top-8 right-12 z-10 animate-bounce pointer-events-none">
+          <mat-icon class="!w-12 !h-12 !text-5xl text-text-primary">auto_awesome</mat-icon>
+        </div>
+        <div class="absolute top-32 right-4 z-10 animate-pulse pointer-events-none">
+          <mat-icon class="!w-8 !h-8 !text-3xl text-text-primary">auto_awesome</mat-icon>
+        </div>
+
+        <!-- Carousel Container -->
+        <div class="relative w-full h-full rounded-lg overflow-hidden cursor-grab active:cursor-grabbing">
+          <div
+            *ngFor="let image of heroImages; let i = index"
+            class="absolute inset-0 transition-opacity duration-500"
+            [class.opacity-0]="currentSlide !== i"
+            [class.opacity-100]="currentSlide === i"
+            [style.transform]="'translateX(0px)'"
+            style="transition: opacity 500ms, transform 300ms ease-out;"
+          >
+            <img
+              [alt]="image.alt"
+              draggable="false"
+              [src]="image.url"
+              class="object-cover object-center pointer-events-none w-full h-full"
+            />
+          </div>
+
+          <button
+            (click)="previousSlide()"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+          >
+            <mat-icon class="text-white text-[26px]">chevron_left</mat-icon>
+          </button>
+
+          <button
+            (click)="nextSlide()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+            aria-label="Next slide"
+          >
+            <mat-icon class="!w-6 !h-6 text-gray-200">chevron_right</mat-icon>
+          </button>
+
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            <button
+              *ngFor="let image of heroImages; let i = index"
+              (click)="goToSlide(i)"
+              [class.w-2]="currentSlide !== i"
+              [class.w-8]="currentSlide === i"
+              [class.bg-surface/60]="currentSlide !== i"
+              [class.hover:bg-surface/80]="currentSlide !== i"
+              [class.bg-primary]="currentSlide === i"
+              [class.border-border]="currentSlide !== i"
+              [class.border-primary]="currentSlide === i"
+              class="h-2 rounded-full transition-all border"
+              [attr.aria-label]="'Go to slide ' + (i + 1)"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brands Bar -->
+  <div class="bg-[#2c2c2c] py-8 flex flex-wrap justify-center gap-10 lg:gap-20 text-xl font-serif opacity-80">
+    <span>VERSACE</span>
+    <span>ZARA</span>
+    <span>GUCCI</span>
+    <span>PRADA</span>
+    <span>Calvin Klein</span>
+  </div>
+
+  <!-- New Arrivals Section -->
+  <section class="py-24 px-6 sm:px-10 lg:px-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+    <!-- Header -->
+    <div class="flex items-center justify-center mb-14">
+      <h2 class="text-4xl md:text-5xl font-black uppercase italic tracking-tight text-gray-900 dark:text-white">
+        New Arrivals
+      </h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoadingNewArrivals" class="flex justify-center py-24">
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-cyan-600 border-t-transparent"></div>
+        <p class="text-gray-600 dark:text-gray-400 mt-5 text-sm">Loading products...</p>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div
+      *ngIf="!isLoadingNewArrivals && newArrivals.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+    >
+      <app-card-producte
+        *ngFor="let product of newArrivals; trackBy: trackByProductId"
+        [product]="product"
+        (wishlistToggle)="toggleWishlist($event)"
+        (addToCartClick)="addToCart($event)"
+      ></app-card-producte>
+    </div>
+
+    <!-- View All Button -->
+    <div class="flex justify-center mt-16">
+      <button
+        routerLink="/shop"
+        class="px-8 py-3 text-base border-2 border-cyan-600 text-cyan-600 bg-transparent hover:bg-cyan-600 hover:text-white rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
+      >
+        View All
+        <mat-icon class="!text-base">arrow_forward</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <!-- Top Selling Section -->
+  <section class="py-24 px-6 sm:px-10 lg:px-20 bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-950">
+    <!-- Header -->
+    <div class="flex items-center justify-center mb-14">
+      <h2 class="text-4xl md:text-5xl font-black uppercase italic tracking-tight text-gray-900 dark:text-white">
+        Top Selling
+      </h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoadingTopSelling" class="flex justify-center py-24">
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-cyan-600 border-t-transparent"></div>
+        <p class="text-gray-600 dark:text-gray-400 mt-5 text-sm">Loading products...</p>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div
+      *ngIf="!isLoadingTopSelling && topSelling.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+    >
+      <app-card-producte
+        *ngFor="let product of topSelling; trackBy: trackByProductId"
+        [product]="product"
+        (wishlistToggle)="toggleWishlist($event)"
+        (addToCartClick)="addToCart($event)"
+      ></app-card-producte>
+    </div>
+
+    <!-- View All Button -->
+    <div class="flex justify-center mt-16">
+      <button
+        routerLink="/shop"
+        class="px-8 py-3 text-base border-2 border-cyan-600 text-cyan-600 bg-transparent hover:bg-cyan-600 hover:text-white rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
+      >
+        View All
+        <mat-icon class="!text-base">arrow_forward</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <!-- Browse By Category -->
+  <section class="py-20 px-8 lg:px-20 bg-[#121212] mx-4 lg:mx-20 rounded-[40px]">
+    <h2 class="text-4xl font-black text-center mb-12 uppercase italic">Browse By Category</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div
+        class="lg:col-span-1 h-64 relative rounded-3xl overflow-hidden group cursor-pointer"
+        routerLink="/shop"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop"
+          class="w-full h-full object-cover brightness-50 group-hover:scale-105 transition-all"
+          alt="Women's Fashion"
+        />
+        <span class="absolute top-8 left-8 text-2xl font-bold">Women's Fashion</span>
+      </div>
+
+      <div
+        class="lg:col-span-1 h-64 relative rounded-3xl overflow-hidden group cursor-pointer"
+        routerLink="/shop"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=2071&auto=format&fit=crop"
+          class="w-full h-full object-cover brightness-50 group-hover:scale-105 transition-all"
+          alt="Men's Fashion"
+        />
+        <span class="absolute top-8 left-8 text-2xl font-bold">Men's Fashion</span>
+      </div>
+
+      <div
+        class="lg:col-span-1 h-64 relative rounded-3xl overflow-hidden group cursor-pointer"
+        routerLink="/shop"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070&auto=format&fit=crop"
+          class="w-full h-full object-cover brightness-50 group-hover:scale-105 transition-all"
+          alt="Electronics"
+        />
+        <span class="absolute top-8 left-8 text-2xl font-bold">Electronics</span>
+      </div>
+    </div>
+  </section>
+</div>

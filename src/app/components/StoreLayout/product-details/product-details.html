@@ -1,0 +1,348 @@
+<main class="min-h-screen bg-gray-50 dark:bg-gray-950">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex items-center justify-center py-32">
+    <div class="text-center">
+      <div
+        class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-cyan-600 border-t-transparent"
+      ></div>
+      <p class="text-gray-600 dark:text-gray-400 mt-6 text-lg">Loading product...</p>
+    </div>
+  </div>
+
+  <!-- Product Details -->
+  <div *ngIf="!isLoading && product" class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-8">
+      <a routerLink="/" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+        >Home</a
+      >
+      <mat-icon class="!text-sm">chevron_right</mat-icon>
+      <a routerLink="/shop" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+        >Shop</a
+      >
+      <mat-icon class="!text-sm">chevron_right</mat-icon>
+      <a
+        [routerLink]="['/shop']"
+        [queryParams]="{ category: product.category.name }"
+        class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+      >
+        {{ product.category.name }}
+      </a>
+      <mat-icon class="!text-sm">chevron_right</mat-icon>
+      <span class="text-gray-900 dark:text-white font-medium">{{ product.title }}</span>
+    </nav>
+
+    <!-- Product Content -->
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+      <!-- Image Gallery -->
+      <div class="space-y-4">
+        <!-- Main Image -->
+        <div
+          class="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 group"
+        >
+          <img [src]="selectedImage" [alt]="product.title" class="w-full h-full object-cover" />
+
+          <!-- Sale Badge -->
+          <div
+            *ngIf="product.priceAfterDiscount"
+            class="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-lg"
+          >
+            -{{ getDiscountPercentage() }}%
+          </div>
+
+          <!-- Navigation Arrows -->
+          <button
+            *ngIf="getAllImages().length > 1"
+            (click)="previousImage()"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 border border-gray-200 dark:border-gray-700 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110 flex items-center justify-center"
+          >
+            <mat-icon class="text-gray-900 dark:text-white">chevron_left</mat-icon>
+          </button>
+
+          <button
+            *ngIf="getAllImages().length > 1"
+            (click)="nextImage()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 border border-gray-200 dark:border-gray-700 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110 flex items-center justify-center"
+          >
+            <mat-icon class="text-gray-900 dark:text-white">chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <!-- Thumbnail Images -->
+        <div *ngIf="getAllImages().length > 1" class="grid grid-cols-4 gap-4">
+          <button
+            *ngFor="let image of getAllImages(); let i = index"
+            (click)="selectImage(image, i)"
+            [class.ring-2]="selectedImage === image"
+            [class.ring-cyan-600]="selectedImage === image"
+            class="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-transparent hover:border-cyan-600 dark:hover:border-cyan-400 transition-all"
+          >
+            <img [src]="image" [alt]="product.title" class="w-full h-full object-cover" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="space-y-6">
+        <!-- Title & Category -->
+        <div>
+          <p
+            class="text-sm font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2"
+          >
+            {{ product.category.name }}
+          </p>
+          <h1 class="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-3">
+            {{ product.title }}
+          </h1>
+
+          <!-- Rating & Reviews -->
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1">
+              <mat-icon
+                *ngFor="let filled of getRatingStars(product.ratingsAverage)"
+                [class.text-yellow-400]="filled"
+                [class.text-gray-300]="!filled"
+                [class.dark:text-gray-600]="!filled"
+                class="!text-lg"
+              >
+                {{ filled ? 'star' : 'star_border' }}
+              </mat-icon>
+            </div>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+              {{ product.ratingsAverage }}/5
+            </span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">
+              ({{ product.ratingsQuantity || 0 }} reviews)
+            </span>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="flex items-center gap-3">
+          <span class="text-3xl font-black text-cyan-600 dark:text-cyan-400">
+            ${{ product.priceAfterDiscount || product.price }}
+          </span>
+          <span
+            *ngIf="product.priceAfterDiscount"
+            class="text-xl text-gray-500 dark:text-gray-400 line-through"
+          >
+            ${{ product.price }}
+          </span>
+        </div>
+
+        <!-- Description -->
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+          <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            {{ product.description }}
+          </p>
+        </div>
+
+        <!-- Size Selection -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold text-gray-900 dark:text-white"> Select Size </label>
+            <button class="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">
+              Size Guide
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button
+              *ngFor="let size of availableSizes"
+              (click)="selectSize(size)"
+              [class.bg-cyan-600]="selectedSize === size"
+              [class.text-white]="selectedSize === size"
+              [class.border-cyan-600]="selectedSize === size"
+              [class.bg-gray-100]="selectedSize !== size"
+              [class.dark:bg-gray-800]="selectedSize !== size"
+              [class.text-gray-900]="selectedSize !== size"
+              [class.dark:text-white]="selectedSize !== size"
+              [class.border-gray-300]="selectedSize !== size"
+              [class.dark:border-gray-700]="selectedSize !== size"
+              class="px-6 py-2.5 rounded-lg border-2 font-semibold transition-all hover:border-cyan-600 dark:hover:border-cyan-400"
+            >
+              {{ size }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Color Selection -->
+        <div>
+          <label class="text-sm font-semibold text-gray-900 dark:text-white mb-3 block">
+            Select Color: <span class="text-cyan-600 dark:text-cyan-400">{{ selectedColor }}</span>
+          </label>
+          <div class="flex gap-3">
+            <button
+              *ngFor="let color of availableColors"
+              (click)="selectColor(color.name)"
+              [class.ring-2]="selectedColor === color.name"
+              [class.ring-cyan-600]="selectedColor === color.name"
+              [class.ring-offset-2]="selectedColor === color.name"
+              [class.dark:ring-offset-gray-950]="selectedColor === color.name"
+              class="w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-700 hover:scale-110 transition-all"
+              [style.backgroundColor]="color.value"
+              [attr.aria-label]="color.name"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Quantity & Actions -->
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-800 space-y-4">
+          <!-- Quantity -->
+          <div>
+            <label class="text-sm font-semibold text-gray-900 dark:text-white mb-3 block">
+              Quantity
+            </label>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <!-- Quantity Selector -->
+              <div class="flex items-center">
+                <div
+                  class="flex items-center bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden"
+                >
+                  <!-- Decrease -->
+                  <button
+                    (click)="decrementQuantity()"
+                    [disabled]="quantity <= 1"
+                    class="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <mat-icon class="!text-lg">remove</mat-icon>
+                  </button>
+
+                  <!-- Quantity Display -->
+                  <input
+                    type="text"
+                    [value]="quantity"
+                    readonly
+                    class="w-14 h-12 text-center font-semibold text-lg text-gray-900 dark:text-white bg-transparent outline-none"
+                  />
+
+                  <!-- Increase -->
+                  <button
+                    (click)="incrementQuantity()"
+                    [disabled]="quantity >= product.quantity"
+                    class="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <mat-icon class="!text-lg">add</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Stock Info -->
+              <span
+                class="text-sm font-medium"
+                [ngClass]="{
+                  'text-green-600 dark:text-green-400': product.quantity > 10,
+                  'text-yellow-600 dark:text-yellow-400':
+                    product.quantity <= 10 && product.quantity > 3,
+                  'text-red-600 dark:text-red-400': product.quantity <= 3,
+                }"
+              >
+                {{ product.quantity }} items available
+              </span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3">
+            <button
+              (click)="addToCart(product)"
+              class="flex-1 px-6 py-3.5 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-600/20 hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+              <mat-icon>shopping_cart</mat-icon>
+              Add to Cart
+            </button>
+            <button
+              (click)="toggleWishlist(product)"
+              [class.bg-red-50]="product.inWishlist"
+              [class.dark:bg-red-900/20]="product.inWishlist"
+              [class.text-red-500]="product.inWishlist"
+              [class.border-red-500]="product.inWishlist"
+              class="px-4 py-3.5 border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white hover:border-red-500 hover:text-red-500 rounded-xl transition-all flex items-center justify-center"
+            >
+              <mat-icon>{{ product.inWishlist ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+          </div>
+
+          <button
+            (click)="buyNow()"
+            class="w-full px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-orange-500/20 hover:shadow-xl hover:scale-[1.02]"
+          >
+            Buy Now
+          </button>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-800 space-y-3">
+          <div class="flex items-center gap-3 text-sm">
+            <mat-icon class="text-gray-400">local_shipping</mat-icon>
+            <span class="text-gray-600 dark:text-gray-400">Free delivery on orders over $100</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <mat-icon class="text-gray-400">currency_exchange</mat-icon>
+            <span class="text-gray-600 dark:text-gray-400">30-day return policy</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <mat-icon class="text-gray-400">verified</mat-icon>
+            <span class="text-gray-600 dark:text-gray-400"
+              >Authentic {{ product.brand.name }} product</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <section class="py-12 border-t border-gray-200 dark:border-gray-800">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-black text-gray-900 dark:text-white">You Might Also Like</h2>
+        <a
+          routerLink="/shop"
+          [queryParams]="{ category: product.category.name }"
+          class="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold flex items-center gap-1"
+        >
+          View All
+          <mat-icon class="!text-base">arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      <!-- Loading Related Products -->
+      <div *ngIf="isLoadingRelated" class="flex justify-center py-12">
+        <div
+          class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-cyan-600 border-t-transparent"
+        ></div>
+      </div>
+
+      <!-- Related Products Grid -->
+      <div
+        *ngIf="!isLoadingRelated && relatedProducts.length > 0"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <app-card-producte
+          *ngFor="let relatedProduct of relatedProducts; trackBy: trackByProductId"
+          [product]="relatedProduct"
+          (wishlistToggle)="toggleWishlist($event)"
+          (addToCartClick)="addToCart($event)"
+        ></app-card-producte>
+      </div>
+
+      <!-- No Related Products -->
+      <div *ngIf="!isLoadingRelated && relatedProducts.length === 0" class="text-center py-12">
+        <p class="text-gray-500 dark:text-gray-400">No related products found</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Product Not Found -->
+  <div *ngIf="!isLoading && !product" class="flex flex-col items-center justify-center py-32">
+    <mat-icon class="!text-8xl text-gray-400 mb-6">shopping_bag</mat-icon>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Product Not Found</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">
+      The product you're looking for doesn't exist
+    </p>
+    <a
+      routerLink="/shop"
+      class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition-all"
+    >
+      Back to Shop
+    </a>
+  </div>
+</main>

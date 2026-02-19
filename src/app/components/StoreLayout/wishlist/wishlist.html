@@ -1,0 +1,277 @@
+<main class="min-h-screen bg-gray-50 dark:bg-gray-950 pb-20">
+  <!-- Page Header -->
+  <div
+    class="bg-white dark:bg-gray-900 py-12 md:py-16 border-b border-gray-200 dark:border-gray-800"
+  >
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white text-center">
+        MY WISHLIST
+      </h1>
+      <p class="text-center text-gray-600 dark:text-gray-400 mt-4">
+        {{ wishlistItems.length }} {{ wishlistItems.length === 1 ? 'item' : 'items' }} in your
+        wishlist
+      </p>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Empty Wishlist State -->
+    <div *ngIf="wishlistItems.length === 0" class="flex flex-col items-center justify-center py-20">
+      <mat-icon class="!text-8xl text-gray-400 mb-6">favorite_border</mat-icon>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Your wishlist is empty</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">Save your favorite items here!</p>
+      <a
+        routerLink="/shop"
+        class="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-600/20"
+      >
+        Continue Shopping
+      </a>
+    </div>
+
+    <!-- Wishlist Content -->
+    <div *ngIf="wishlistItems.length > 0">
+      <!-- Toolbar -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-4">
+          <!-- Sort Dropdown -->
+          <div class="relative">
+            <select
+              [(ngModel)]="sortBy"
+              (change)="applySorting()"
+              class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400 cursor-pointer"
+            >
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="name">Name: A to Z</option>
+            </select>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <button
+            (click)="toggleViewMode()"
+            [attr.aria-label]="viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'"
+            class="w-11 h-11 flex items-center justify-center rounded-xl border transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500/50 active:scale-95"
+            [ngClass]="{
+              'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 border-cyan-500/40 shadow-sm':
+                viewMode === 'list',
+              'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800':
+                viewMode === 'grid',
+            }"
+          >
+            <mat-icon
+              class="!text-xl transition-transform duration-300"
+              [class.rotate-180]="viewMode === 'list'"
+            >
+              {{ viewMode === 'grid' ? 'view_list' : 'grid_view' }}
+            </mat-icon>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Move All to Cart -->
+          <button
+            (click)="moveAllToCart()"
+            class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition-all flex items-center gap-2"
+          >
+            <mat-icon class="!text-base">shopping_cart</mat-icon>
+            Add All to Cart
+          </button>
+
+          <!-- Clear Wishlist -->
+          <button
+            (click)="clearWishlist()"
+            class="px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold rounded-lg transition-all flex items-center gap-2"
+          >
+            <mat-icon class="!text-base">delete_outline</mat-icon>
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <!-- Total Items -->
+        <div
+          class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800"
+        >
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-cyan-100 dark:bg-cyan-900/20 rounded-xl">
+              <mat-icon class="text-cyan-600 dark:text-cyan-400">favorite</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-black text-gray-900 dark:text-white">
+                {{ wishlistItems.length }}
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Total Items</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Value -->
+        <div
+          class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800"
+        >
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-xl">
+              <mat-icon class="text-purple-600 dark:text-purple-400">payments</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-black text-gray-900 dark:text-white">
+                ${{ getTotalValue().toFixed(2) }}
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Total Value</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Savings -->
+        <div
+          class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800"
+        >
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-xl">
+              <mat-icon class="text-green-600 dark:text-green-400">savings</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-black text-gray-900 dark:text-white">
+                ${{ getTotalSavings().toFixed(2) }}
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Total Savings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid View -->
+      <div
+        *ngIf="viewMode === 'grid'"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      >
+        <div *ngFor="let item of wishlistItems; trackBy: trackByProductId" class="relative group">
+          <!-- Use Product Card Component -->
+          <app-card-producte
+            [product]="$any(item)"
+            (wishlistToggle)="handleWishlistToggle($any($event))"
+            (addToCartClick)="handleAddToCart($any($event))"
+          ></app-card-producte>
+        </div>
+      </div>
+
+      <!-- List View -->
+      <div *ngIf="viewMode === 'list'" class="space-y-4">
+        <div
+          *ngFor="let item of wishlistItems; trackBy: trackByProductId"
+          class="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800 hover:shadow-lg transition-all"
+        >
+          <div class="flex gap-4">
+            <!-- Product Image -->
+            <a
+              [routerLink]="['/product', item._id]"
+              class="flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800"
+            >
+              <img
+                [src]="item.imageCover"
+                [alt]="item.title"
+                class="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+              />
+            </a>
+
+            <!-- Product Info -->
+            <div class="flex-1 min-w-0 flex flex-col">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex-1 min-w-0 pr-4">
+                  <a
+                    [routerLink]="['/product', item._id]"
+                    class="font-semibold text-lg text-gray-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors line-clamp-2 block"
+                  >
+                    {{ item.title }}
+                  </a>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {{ item.category.name }}
+                    <span *ngIf="item.brand"> • {{ item.brand.name }}</span>
+                  </p>
+                </div>
+
+                <!-- Discount Badge -->
+                <div
+                  *ngIf="item.priceAfterDiscount"
+                  class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+                >
+                  -{{ getDiscountPercentage(item) }}%
+                </div>
+              </div>
+
+              <!-- Rating -->
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center gap-1">
+                  <mat-icon class="!text-base text-yellow-400">star</mat-icon>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    {{ item.ratingsAverage }}
+                  </span>
+                </div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">
+                  ({{ item.ratingsQuantity || 0 }} reviews)
+                </span>
+              </div>
+
+              <!-- Price & Actions -->
+              <div class="mt-auto flex items-center justify-between">
+                <!-- Price -->
+                <div>
+                  <p class="text-2xl font-black text-cyan-600 dark:text-cyan-400">
+                    ${{ getItemPrice(item).toFixed(2) }}
+                  </p>
+                  <p
+                    *ngIf="item.priceAfterDiscount"
+                    class="text-sm text-gray-500 dark:text-gray-400 line-through"
+                  >
+                    ${{ item.price.toFixed(2) }}
+                  </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="moveToCart(item)"
+                    class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition-all flex items-center gap-2"
+                  >
+                    <mat-icon class="!text-base">shopping_cart</mat-icon>
+                    Add to Cart
+                  </button>
+                  <button
+                    (click)="removeFromWishlist(item)"
+                    class="p-2 border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                  >
+                    <mat-icon class="!text-xl">delete_outline</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Stock Status -->
+              <div class="mt-3">
+                <span
+                  [class.text-green-600]="item.quantity > 10"
+                  [class.dark:text-green-400]="item.quantity > 10"
+                  [class.text-orange-600]="item.quantity <= 10 && item.quantity > 0"
+                  [class.dark:text-orange-400]="item.quantity <= 10 && item.quantity > 0"
+                  [class.text-red-600]="item.quantity === 0"
+                  [class.dark:text-red-400]="item.quantity === 0"
+                  class="text-sm font-medium"
+                >
+                  {{
+                    item.quantity > 10
+                      ? 'In Stock'
+                      : item.quantity > 0
+                        ? 'Only ' + item.quantity + ' left'
+                        : 'Out of Stock'
+                  }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

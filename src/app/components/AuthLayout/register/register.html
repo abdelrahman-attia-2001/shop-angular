@@ -1,0 +1,155 @@
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+  
+  <div class="bg-gradient-to-br from-orange-400 via-orange-300 to-orange-400 flex flex-col justify-between p-8 lg:p-12 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -mr-20 -mt-20"></div>
+    
+    <div class="relative z-10">
+      <button 
+        routerLink="/"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/20 text-white rounded-full hover:bg-slate-900/40 transition-all backdrop-blur-md border border-white/20"
+      >
+        <mat-icon class="!text-xl">arrow_back</mat-icon>
+        <span class="font-medium">Back to Home</span>
+      </button>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center flex-1 text-center text-white">
+      <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-6 mb-8 shadow-xl border border-white/30">
+        <mat-icon class="!w-16 !h-16 !text-6xl text-white">palette</mat-icon>
+      </div>
+
+      <h1 class="text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight text-slate-900">
+        Start Your Fashion Journey
+      </h1>
+
+      <p class="text-lg text-slate-800 max-w-md mb-12 font-medium opacity-80">
+        Express yourself through fashion. Discover, create, and share your unique style.
+      </p>
+
+      <div class="grid grid-cols-3 gap-8 w-full max-w-lg">
+        <div class="text-center">
+          <div class="text-3xl lg:text-4xl font-black text-slate-900">10k+</div>
+          <div class="text-xs uppercase tracking-widest text-slate-800 font-bold">Members</div>
+        </div>
+        <div class="text-center border-x border-slate-900/10">
+          <div class="text-3xl lg:text-4xl font-black text-slate-900">500+</div>
+          <div class="text-xs uppercase tracking-widest text-slate-800 font-bold">Brands</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl lg:text-4xl font-black text-slate-900">50k+</div>
+          <div class="text-xs uppercase tracking-widest text-slate-800 font-bold">Products</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-950 flex items-center justify-center p-8 lg:p-12 relative">
+    <div class="w-full max-w-md">
+      
+      <div class="text-center mb-8">
+        <h1 class="text-teal-400 text-5xl font-black mb-2 tracking-tighter">Clothera</h1>
+        <p class="text-gray-400">Create your account to get started</p>
+      </div>
+
+      <div class="bg-slate-900/50 rounded-3xl p-8 backdrop-blur-md border border-slate-800 shadow-2xl">
+        <h2 class="text-white text-2xl font-semibold mb-6">Sign Up</h2>
+
+        <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="space-y-4">
+          
+          <div>
+            <div class="relative group">
+              <input 
+                type="text" 
+                formControlName="name"
+                placeholder="Full Name"
+                class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-gray-200 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all"
+              />
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 !text-xl text-gray-500 group-focus-within:text-teal-400">person</mat-icon>
+            </div>
+          </div>
+
+          <div>
+            <div class="relative group">
+              <input 
+                type="email" 
+                formControlName="email"
+                placeholder="Email Address"
+                class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-gray-200 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all"
+              />
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 !text-xl text-gray-500 group-focus-within:text-teal-400">mail</mat-icon>
+            </div>
+          </div>
+
+          <div>
+            <div class="relative group">
+              <input 
+                type="tel" 
+                formControlName="phone"
+                placeholder="Phone (01xxxxxxxxx)"
+                class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-gray-200 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all"
+              />
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 !text-xl text-gray-500 group-focus-within:text-teal-400">phone</mat-icon>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="relative group">
+              <input 
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Password"
+                class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-gray-200 focus:outline-none focus:border-teal-400 transition-all"
+              />
+              <button type="button" (click)="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                <mat-icon class="!text-lg">{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="relative group">
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="rePassword"
+                placeholder="Confirm"
+                class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-gray-200 focus:outline-none focus:border-teal-400 transition-all"
+              />
+              <button type="button" (click)="showConfirmPassword = !showConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                <mat-icon class="!text-lg">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 py-2">
+            <input 
+              type="checkbox" 
+              id="terms"
+              [(ngModel)]="agreedToTerms"
+              [ngModelOptions]="{standalone: true}"
+              class="w-4 h-4 text-teal-500 bg-slate-800 border-slate-700 rounded focus:ring-teal-400"
+            />
+            <label for="terms" class="text-xs text-gray-400">
+              I agree to the <span class="text-teal-400 cursor-pointer">Terms & Conditions</span>
+            </label>
+          </div>
+
+          <div *ngIf="serverError" class="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-xl text-xs flex items-center gap-2">
+            <mat-icon class="!text-base">error_outline</mat-icon>
+            {{ serverError }}
+          </div>
+
+          <button 
+            type="submit"
+            [disabled]="registerForm.invalid || !agreedToTerms || isLoading"
+            class="w-full py-4 bg-teal-600 hover:bg-teal-500 disabled:bg-slate-800 disabled:text-gray-600 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
+          >
+            <span *ngIf="isLoading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+          </button>
+
+          <p class="text-center text-sm text-gray-500 mt-4">
+            Already have an account? 
+            <a routerLink="/login" class="text-teal-400 hover:underline font-bold">Sign In</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
